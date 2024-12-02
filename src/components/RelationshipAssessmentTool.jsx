@@ -106,7 +106,7 @@ const RelationshipAssessmentTool = () => {
     <div className="min-h-screen">
      {/* Background avec votre image */}
         <div className="fixed inset-0 bg-black bg-cover bg-center" style={{ 
-              backgroundImage: `url('/obscure.png')`
+              backgroundImage: `url('/back.png')`
             }}>
           <div className="absolute inset-0 bg-black/60" /> {/* Overlay pour la lisibilité */}
       </div>
