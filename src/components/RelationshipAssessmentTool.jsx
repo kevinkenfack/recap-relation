@@ -1,30 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
-  Heart, Star, MessageCircle, Users, HandHeart, 
+  Heart, MessageCircle, Users, HandHeart, 
   Lock, Shuffle, Gift, CheckCircle, X,
-  Info
+  GiftIcon, Package, Sparkles
 } from 'lucide-react';
 
 const RelationshipAssessmentTool = () => {
-  const [notes, setNotes] = useState({
-    emotionalSupport: 0,
-    responsibilitySharing: 0,
-    communication: 0,
-    compromise: 0,
-    mutualTrust: 0,
-    affection: 0
-  });
-
-  const [giftNotes, setGiftNotes] = useState({
-    birthdayGifts: null,
-    anniversaryGifts: null,
-    spontaneousGifts: null,
-    thoughtfulGifts: null
-  });
-
+  const [notes, setNotes] = useState({});
   const [showResults, setShowResults] = useState(false);
-  const [totalScore, setTotalScore] = useState(0);
-  const [bonusPoints, setBonusPoints] = useState(0);
 
   const ratingDescriptions = {
     0: "Non évalué",
@@ -35,297 +18,227 @@ const RelationshipAssessmentTool = () => {
     5: "Excellent"
   };
 
-  const criteriaDetails = [
-    { 
-      key: "emotionalSupport", 
-      label: "Soutien Émotionnel", 
-      icon: <HandHeart className="text-teal-400" />,
-      description: "Capacité à être présent et empathique lors des moments difficiles",
-      weight: 1.2
+  const allCriteria = [
+    {
+      key: "emotionalSupport",
+      label: "Soutien Émotionnel",
+      icon: <HandHeart />,
+      description: "Présence et empathie dans les moments difficiles",
+      weight: 1.2,
+      type: "rating"
     },
-    { 
-      key: "responsibilitySharing", 
-      label: "Partage des Responsabilités", 
-      icon: <Users className="text-blue-400" />,
-      description: "Répartition équitable des tâches et décisions",
-      weight: 1.0
+    {
+      key: "communication",
+      label: "Communication",
+      icon: <MessageCircle />,
+      description: "Écoute active et expression des sentiments",
+      weight: 1.3,
+      type: "rating"
     },
-    { 
-      key: "communication", 
-      label: "Communication", 
-      icon: <MessageCircle className="text-green-400" />,
-      description: "Ouverture, écoute active et expression claire des sentiments",
-      weight: 1.3
+    {
+      key: "mutualTrust",
+      label: "Confiance Mutuelle",
+      icon: <Lock />,
+      description: "Sentiment de sécurité dans la relation",
+      weight: 1.4,
+      type: "rating"
     },
-    { 
-      key: "compromise", 
-      label: "Compromis et Ajustements", 
-      icon: <Shuffle className="text-purple-400" />,
-      description: "Capacité à trouver des solutions mutuellement satisfaisantes",
-      weight: 1.1
+    {
+      key: "birthdayGifts",
+      label: "Cadeaux d'Anniversaire",
+      icon: <Gift />,
+      description: "Attention particulière aux anniversaires",
+      weight: 0.3,
+      type: "boolean"
     },
-    { 
-      key: "mutualTrust", 
-      label: "Confiance Mutuelle", 
-      icon: <Lock className="text-pink-400" />,
-      description: "Sentiment de sécurité et de fiabilité dans la relation",
-      weight: 1.4
+    {
+      key: "responsibilitySharing",
+      label: "Partage des Responsabilités",
+      icon: <Users />,
+      description: "Équilibre des tâches et décisions",
+      weight: 1.0,
+      type: "rating"
     },
-    { 
-      key: "affection", 
-      label: "Démonstration d'Affection", 
-      icon: <Heart className="text-red-400" />,
-      description: "Expressions physiques et verbales d'amour",
-      weight: 1.0
+    {
+      key: "compromise",
+      label: "Capacité au Compromis",
+      icon: <Shuffle />,
+      description: "Recherche de solutions communes",
+      weight: 1.1,
+      type: "rating"
+    },
+    {
+      key: "spontaneousGifts",
+      label: "Cadeaux Spontanés",
+      icon: <Package />,
+      description: "Surprises et cadeaux inattendus",
+      weight: 0.5,
+      type: "boolean"
+    },
+    {
+      key: "anniversaryGifts",
+      label: "Cadeaux d'Anniversaire de Relation",
+      icon: <Heart />,
+      description: "Attention aux dates importantes du couple",
+      weight: 0.4,
+      type: "boolean"
+    },
+    {
+      key: "thoughtfulGifts",
+      label: "Cadeaux Personnalisés",
+      icon: <Sparkles />,
+      description: "Cadeaux réfléchis et adaptés aux goûts",
+      weight: 0.3,
+      type: "boolean"
     }
   ];
 
-  const giftOptions = [
-    { key: "birthdayGifts", label: "Cadeaux d'anniversaire", points: 0.3 },
-    { key: "anniversaryGifts", label: "Cadeaux d'anniversaire de relation", points: 0.4 },
-    { key: "spontaneousGifts", label: "Cadeaux spontanés", points: 0.5 },
-    { key: "thoughtfulGifts", label: "Cadeaux réfléchis et personnalisés", points: 0.3 }
-  ];
-
-  const handleChange = (value, critere) => {
+  const handleChange = (key, value) => {
     setNotes(prev => ({
-      ...prev,
-      [critere]: parseInt(value)
-    }));
-  };
-
-  const handleGiftChange = (key, value) => {
-    setGiftNotes(prev => ({
       ...prev,
       [key]: value
     }));
   };
 
-  const calculerNoteGlobale = () => {
-    // Calcul pondéré des critères principaux
+  const calculateScore = () => {
     let totalWeightedScore = 0;
     let totalWeight = 0;
 
-    criteriaDetails.forEach(criteria => {
-      const score = notes[criteria.key];
-      totalWeightedScore += score * criteria.weight;
-      totalWeight += criteria.weight;
+    allCriteria.forEach(criteria => {
+      const value = notes[criteria.key];
+      if (criteria.type === "rating" && value) {
+        totalWeightedScore += value * criteria.weight;
+        totalWeight += criteria.weight;
+      } else if (criteria.type === "boolean") {
+        totalWeightedScore += (value ? 5 : 0) * criteria.weight;
+        totalWeight += criteria.weight;
+      }
     });
 
-    const baseScore = totalWeightedScore / totalWeight;
-
-    // Calcul des points bonus pour les cadeaux
-    const giftScore = giftOptions.reduce((acc, option) => {
-      return acc + (giftNotes[option.key] === true ? option.points : 0);
-    }, 0);
-
-    setBonusPoints(giftScore);
-    const finalScore = Math.min(5, baseScore + giftScore);
-    setTotalScore(finalScore);
-    
-    return finalScore.toFixed(2);
+    return totalWeight > 0 ? (totalWeightedScore / totalWeight).toFixed(2) : 0;
   };
 
-  const interpreterNote = (note) => {
-    if (note < 2) return "Relation en grande difficulté";
-    if (note < 3) return "Relation fragile nécessitant des améliorations";
-    if (note < 4) return "Relation stable mais à développer";
-    if (note < 4.5) return "Relation solide et épanouissante";
-    return "Relation exceptionnelle et harmonieuse";
+  const getInterpretation = (score) => {
+    if (score < 2) return "Relation nécessitant attention et dialogue";
+    if (score < 3) return "Relation avec potentiel d'amélioration";
+    if (score < 4) return "Relation équilibrée et positive";
+    if (score < 4.5) return "Relation épanouissante";
+    return "Relation exceptionnelle";
   };
 
-  const handleShowResults = () => {
-    const allCriteriaRated = Object.values(notes).every(note => note > 0);
-    const allGiftsEvaluated = Object.values(giftNotes).every(note => note !== null);
-
-    if (allCriteriaRated && allGiftsEvaluated) {
-      setShowResults(true);
-    } else {
-      alert("Veuillez évaluer tous les critères et répondre aux questions sur les cadeaux avant de voir les résultats.");
-    }
+  const canShowResults = () => {
+    return allCriteria.every(c => notes[c.key] !== undefined);
   };
 
   return (
-    <div className="min-h-screen bg-black text-gray-100 flex flex-col justify-between" 
-         style={{
-           backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.95)), url("/api/placeholder/1920/1080")',
-           backgroundSize: 'cover',
-           backgroundPosition: 'center',
-           backgroundAttachment: 'fixed'
-         }}>
-      <main className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-4xl bg-gray-900 rounded-2xl shadow-2xl overflow-hidden backdrop-blur">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6">
-            <div className="flex items-center mb-4">
-              <Heart className="w-8 h-8 mr-3 text-teal-400" />
-              <h2 className="text-2xl font-bold">Évaluation de Relation</h2>
-            </div>
-            <p className="text-gray-400 text-sm">
-              Une analyse approfondie de votre relation basée sur des critères pondérés
-            </p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 flex flex-col">
+      <div className="flex-grow">
+        <div className="max-w-4xl mx-auto p-6">
+          <header className="text-center mb-12">
+            <h1 className="text-3xl font-bold mb-4 text-teal-400">Évaluation de Relation</h1>
+            <p className="text-gray-400">Analysez la qualité de votre relation à travers différents aspects</p>
+          </header>
 
-          {/* Main Content */}
-          <div className="p-4 lg:p-6 grid md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              {/* Criteria Section */}
-              <div className="space-y-3">
-                {criteriaDetails.map((criteria) => (
-                  <div key={criteria.key} 
-                       className="bg-gray-800 p-4 rounded-lg shadow transition-all hover:shadow-lg hover:bg-gray-750">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0">{criteria.icon}</div>
-                      <div className="flex-grow">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium text-gray-200">{criteria.label}</h3>
-                          <span className="text-xs text-gray-400">
-                            (x{criteria.weight})
-                          </span>
-                        </div>
-                        <p className="text-sm text-gray-400">{criteria.description}</p>
-                      </div>
-                      <select 
-                        value={notes[criteria.key]}
-                        onChange={(e) => handleChange(e.target.value, criteria.key)}
-                        className="bg-gray-700 border-gray-600 text-gray-200 rounded p-1 text-sm"
-                      >
-                        {Object.entries(ratingDescriptions).map(([value, label]) => (
-                          <option key={value} value={value}>{label}</option>
-                        ))}
-                      </select>
-                    </div>
+          <div className="grid gap-6">
+            {allCriteria.map((criteria) => (
+              <div key={criteria.key} 
+                   className="bg-gray-800/50 backdrop-blur rounded-xl p-6 transition-all hover:bg-gray-800/70">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-gray-700/50 rounded-lg text-teal-400">
+                    {criteria.icon}
                   </div>
-                ))}
-              </div>
-
-              {/* Gifts Section */}
-              <div className="bg-gray-800 p-4 rounded-lg">
-                <div className="flex items-center mb-4">
-                  <Gift className="text-amber-400 mr-2" />
-                  <h3 className="text-lg font-medium">Cadeaux et Surprises</h3>
-                  <span className="ml-2 text-xs text-gray-400">(Points bonus)</span>
-                </div>
-                <div className="space-y-3">
-                  {giftOptions.map((option) => (
-                    <div key={option.key} 
-                         className="flex items-center justify-between p-2 bg-gray-750 rounded">
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-300">{option.label}</span>
-                        <span className="text-xs text-gray-500">
-                          (+{option.points} pts)
-                        </span>
-                      </div>
-                      <div className="flex gap-4">
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="radio"
-                            name={option.key}
-                            checked={giftNotes[option.key] === true}
-                            onChange={() => handleGiftChange(option.key, true)}
-                            className="hidden"
-                          />
-                          <div className={`w-6 h-6 flex items-center justify-center rounded border ${
-                            giftNotes[option.key] === true 
-                              ? 'bg-teal-500 border-teal-500' 
-                              : 'border-gray-600'
-                          }`}>
-                            {giftNotes[option.key] === true && <CheckCircle className="w-4 h-4 text-white" />}
-                          </div>
-                          <span className="ml-2 text-sm">Oui</span>
-                        </label>
-                        <label className="flex items-center cursor-pointer">
-                          <input
-                            type="radio"
-                            name={option.key}
-                            checked={giftNotes[option.key] === false}
-                            onChange={() => handleGiftChange(option.key, false)}
-                            className="hidden"
-                          />
-                          <div className={`w-6 h-6 flex items-center justify-center rounded border ${
-                            giftNotes[option.key] === false 
-                              ? 'bg-red-500 border-red-500' 
-                              : 'border-gray-600'
-                          }`}>
-                            {giftNotes[option.key] === false && <X className="w-4 h-4 text-white" />}
-                          </div>
-                          <span className="ml-2 text-sm">Non</span>
-                        </label>
-                      </div>
+                  
+                  <div className="flex-grow">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-medium">{criteria.label}</h3>
+                      <span className="text-xs text-teal-400">×{criteria.weight}</span>
                     </div>
-                  ))}
+                    <p className="text-sm text-gray-400 mb-4">{criteria.description}</p>
+                    
+                    {criteria.type === "rating" ? (
+                      <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map((value) => (
+                          <button
+                            key={value}
+                            onClick={() => handleChange(criteria.key, value)}
+                            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all
+                              ${notes[criteria.key] === value 
+                                ? 'bg-teal-500 text-white' 
+                                : 'bg-gray-700/50 hover:bg-gray-700'}`}
+                          >
+                            {value}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex gap-4">
+                        {[true, false].map((value) => (
+                          <button
+                            key={value.toString()}
+                            onClick={() => handleChange(criteria.key, value)}
+                            className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-all
+                              ${notes[criteria.key] === value
+                                ? value 
+                                  ? 'bg-teal-500 text-white'
+                                  : 'bg-red-500 text-white'
+                                : 'bg-gray-700/50 hover:bg-gray-700'}`}
+                          >
+                            {value ? <CheckCircle className="w-4 h-4" /> : <X className="w-4 h-4" />}
+                            {value ? 'Oui' : 'Non'}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-
-              {/* Submit Button */}
-              <button 
-                onClick={handleShowResults}
-                className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg transition-colors flex items-center justify-center gap-2 mt-6"
-              >
-                <CheckCircle className="w-5 h-5" />
-                Voir les Résultats
-              </button>
-            </div>
-
-            {/* Right side placeholder */}
-            <div className="hidden md:flex items-center justify-center">
-              <div className="text-center text-gray-500">
-                <Heart className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                <p>Complétez l'évaluation pour voir vos résultats</p>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="bg-black bg-opacity-80 text-center py-3 px-4">
-        <p className="text-gray-500 text-sm">
+          <button
+            onClick={() => canShowResults() && setShowResults(true)}
+            className={`w-full mt-8 p-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2
+              ${canShowResults()
+                ? 'bg-teal-500 hover:bg-teal-600 text-white'
+                : 'bg-gray-700 text-gray-400 cursor-not-allowed'}`}
+          >
+            <CheckCircle className="w-5 h-5" />
+            Voir les Résultats
+          </button>
+        </div>
+      </div>
+
+      <footer className="bg-gray-900/80 backdrop-blur-sm mt-8 py-4 text-center text-gray-400">
+        <p className="text-sm">
           © {new Date().getFullYear()} Outil d'Évaluation de Relation. Tous droits réservés.
         </p>
       </footer>
 
-      {/* Results Modal */}
       {showResults && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 relative animate-fade-in">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 z-50">
+          <div className="bg-gray-900 rounded-2xl max-w-md w-full p-8 relative">
             <button 
               onClick={() => setShowResults(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
             >
               <X className="w-6 h-6" />
             </button>
 
             <div className="text-center">
-              <div className="mb-6">
-                <Heart className="w-12 h-12 mx-auto text-teal-400 mb-2" />
-                <h3 className="text-2xl font-bold text-gray-100">Résultats de l'Évaluation</h3>
-              </div>
-
-              <div className="bg-gray-800 rounded-xl p-6 mb-6">
-                <div className="text-5xl font-bold text-teal-400 mb-4">
-                  {calculerNoteGlobale()}
-                  <span className="text-xl text-gray-400">/5</span>
+              <Heart className="w-16 h-16 text-teal-400 mx-auto mb-6" />
+              
+              <div className="mb-8">
+                <div className="text-6xl font-bold text-teal-400 mb-2">
+                  {calculateScore()}
                 </div>
-                
-                <div className="text-sm text-gray-400 mb-4">
-                  Points bonus: +{bonusPoints.toFixed(1)}
-                </div>
-                
-                <div className="text-lg font-medium text-gray-200 mt-2">
-                  {interpreterNote(parseFloat(calculerNoteGlobale()))}
+                <div className="text-xl text-gray-200">
+                  {getInterpretation(parseFloat(calculateScore()))}
                 </div>
               </div>
 
-              <div className="text-gray-400 text-sm">
-                <p className="mb-2">
-                  Cette évaluation prend en compte:
-                </p>
-                <ul className="text-left text-xs space-y-1">
-                  <li>• Les critères principaux (pondérés selon leur importance)</li>
-                  <li>• Les points bonus des attentions et cadeaux</li>
-                  <li>• L'équilibre global de la relation</li>
-                </ul>
+              <div className="text-sm text-gray-400">
+                <p>Cette évaluation prend en compte tous les aspects de votre relation, 
+                   pondérés selon leur importance relative pour une relation équilibrée.</p>
               </div>
             </div>
           </div>
