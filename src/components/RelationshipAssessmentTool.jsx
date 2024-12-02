@@ -142,7 +142,7 @@ const RelationshipAssessmentTool = () => {
                       </div>
                     </div>
                     
-                    <div className="flex-grow space-y-4 w-full">
+                    <div className="flex-grow space-y-4 w-full relative">
                       <div>
                         <div className="flex flex-col md:flex-row md:items-center gap-3">
                           <h3 className="text-xl font-semibold text-gray-100">{criteria.label}</h3>
@@ -198,7 +198,10 @@ const RelationshipAssessmentTool = () => {
                           </button>
                           
                           {openDropdown === criteria.key && (
-                            <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg">
+                            <div 
+                              className="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg 
+                                        max-h-48 overflow-y-auto"
+                            >
                               <button
                                 onClick={() => handleChange(criteria.key, true)}
                                 className="w-full py-3 px-4 text-left hover:bg-red-500/10 flex items-center gap-2"
