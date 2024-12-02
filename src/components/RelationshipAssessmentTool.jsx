@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   Heart, MessageCircle, Users, HandHeart, 
   Lock, Shuffle, Gift, CheckCircle, X,
-  Sparkles
+  Sparkles, Star
 } from 'lucide-react';
 
 const RelationshipAssessmentTool = () => {
@@ -78,7 +78,7 @@ const RelationshipAssessmentTool = () => {
 
     allCriteria.forEach(criteria => {
       const value = notes[criteria.key];
-      if (criteria.type === "rating" && value) {
+      if (criteria.type === "rating" && value !== undefined) {
         totalWeightedScore += value * criteria.weight;
         totalWeight += criteria.weight;
       } else if (criteria.type === "boolean") {
@@ -91,6 +91,7 @@ const RelationshipAssessmentTool = () => {
   };
 
   const getInterpretation = (score) => {
+    if (score < 1) return "La Force est... presque absente";
     if (score < 2) return "Le côté obscur consume votre relation";
     if (score < 3) return "Un déséquilibre dans la Force menace votre union";
     if (score < 4) return "La Force s'équilibre dans votre relation";
@@ -104,11 +105,11 @@ const RelationshipAssessmentTool = () => {
 
   return (
     <div className="min-h-screen">
-     {/* Background avec votre image */}
-        <div className="fixed inset-0 bg-black bg-cover bg-center" style={{ 
-              backgroundImage: `url('/back.jpg')`
-            }}>
-          <div className="absolute inset-0 bg-black/60" /> {/* Overlay pour la lisibilité */}
+      {/* Background avec votre image */}
+      <div className="fixed inset-0 bg-black bg-cover bg-center" style={{ 
+        backgroundImage: `url('/back.jpg')`
+      }}>
+        <div className="absolute inset-0 bg-black/60" /> {/* Overlay pour la lisibilité */}
       </div>
 
       {/* Main content */}
@@ -152,7 +153,7 @@ const RelationshipAssessmentTool = () => {
 
                       {criteria.type === "rating" ? (
                         <div className="flex flex-wrap gap-3">
-                          {[1, 2, 3, 4, 5].map((value) => (
+                          {[0, 1, 2, 3, 4, 5].map((value) => (
                             <button
                               key={value}
                               onClick={() => handleChange(criteria.key, value)}
@@ -164,7 +165,13 @@ const RelationshipAssessmentTool = () => {
                                   : 'border-gray-700/50 bg-gray-800/30 text-gray-400 hover:border-red-500/50 hover:bg-red-500/10'}
                               `}
                             >
-                              {value}
+                              {value === 0 ? (
+                                <div className="flex items-center">
+                                  <Star className="w-5 h-5 mr-1" />0
+                                </div>
+                              ) : (
+                                value
+                              )}
                             </button>
                           ))}
                         </div>
