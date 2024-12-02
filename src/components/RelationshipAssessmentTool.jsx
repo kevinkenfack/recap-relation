@@ -107,16 +107,13 @@ const RelationshipAssessmentTool = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Background avec votre image */}
       <div className="fixed inset-0 bg-black bg-cover bg-center" style={{ 
         backgroundImage: `url('/back.jpg')`
       }}>
-        <div className="absolute inset-0 bg-black/60" /> {/* Overlay pour la lisibilité */}
+        <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      {/* Main content */}
       <div className="relative min-h-screen flex flex-col justify-between">
-        {/* Header Section */}
         <header className="pt-12 pb-6 px-4">
           <div className="max-w-4xl mx-auto text-center space-y-4">
             <h1 className="text-4xl md:text-6xl font-bold text-red-500 tracking-tight">
@@ -126,7 +123,6 @@ const RelationshipAssessmentTool = () => {
           </div>
         </header>
 
-        {/* Criteria Grid */}
         <main className="flex-grow px-4 py-8">
           <div className="max-w-4xl mx-auto grid gap-6">
             {allCriteria.map((criteria) => (
@@ -173,44 +169,46 @@ const RelationshipAssessmentTool = () => {
                         </div>
                       ) : (
                         <div className="relative w-full">
-                          <button
-                            onClick={() => setOpenDropdown(criteria.key === openDropdown ? null : criteria.key)}
-                            className={`
-                              w-full py-3 px-4 rounded-lg flex items-center justify-between text-lg font-medium
-                              border-2 transition-all duration-300
-                              ${notes[criteria.key] !== undefined
-                                ? 'border-red-500 bg-red-500/20 text-red-400'
-                                : 'border-gray-700/50 bg-gray-800/30 text-gray-400 hover:border-red-500/50 hover:bg-red-500/10'}
-                            `}
-                          >
-                            {notes[criteria.key] === true ? (
-                              <div className="flex items-center gap-2">
-                                <CheckCircle className="w-5 h-5" /> Oui
-                              </div>
-                            ) : notes[criteria.key] === false ? (
-                              <div className="flex items-center gap-2">
-                                <X className="w-5 h-5" /> Non
-                              </div>
-                            ) : (
-                              "Sélectionnez une option"
-                            )}
-                            <ChevronDown className="w-5 h-5" />
-                          </button>
+                          <div className="relative">
+                            <button
+                              onClick={() => setOpenDropdown(criteria.key === openDropdown ? null : criteria.key)}
+                              className={`
+                                w-full py-3 px-4 rounded-lg flex items-center justify-between text-lg font-medium
+                                border-2 transition-all duration-300
+                                ${notes[criteria.key] !== undefined
+                                  ? 'border-red-500 bg-red-500/20 text-red-400'
+                                  : 'border-gray-700/50 bg-gray-800/30 text-gray-400 hover:border-red-500/50 hover:bg-red-500/10'}
+                              `}
+                            >
+                              {notes[criteria.key] === true ? (
+                                <div className="flex items-center gap-2">
+                                  <CheckCircle className="w-5 h-5" /> Oui
+                                </div>
+                              ) : notes[criteria.key] === false ? (
+                                <div className="flex items-center gap-2">
+                                  <X className="w-5 h-5" /> Non
+                                </div>
+                              ) : (
+                                "Sélectionnez une option"
+                              )}
+                              <ChevronDown className="w-5 h-5" />
+                            </button>
+                          </div>
                           
                           {openDropdown === criteria.key && (
                             <div 
-                              className="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg 
-                                        max-h-48 overflow-y-auto"
+                              className="absolute z-50 w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg shadow-lg 
+                                        overflow-visible"
                             >
                               <button
                                 onClick={() => handleChange(criteria.key, true)}
-                                className="w-full py-3 px-4 text-left hover:bg-red-500/10 flex items-center gap-2"
+                                className="w-full py-3 px-4 text-left hover:bg-red-500/10 flex items-center gap-2 rounded-t-lg"
                               >
                                 <CheckCircle className="w-5 h-5 text-green-500" /> Oui
                               </button>
                               <button
                                 onClick={() => handleChange(criteria.key, false)}
-                                className="w-full py-3 px-4 text-left hover:bg-red-500/10 flex items-center gap-2"
+                                className="w-full py-3 px-4 text-left hover:bg-red-500/10 flex items-center gap-2 rounded-b-lg"
                               >
                                 <X className="w-5 h-5 text-red-500" /> Non
                               </button>
@@ -225,7 +223,6 @@ const RelationshipAssessmentTool = () => {
             ))}
           </div>
 
-          {/* Results Button */}
           <div className="max-w-4xl mx-auto mt-8">
             <button
               onClick={() => canShowResults() && setShowResults(true)}
@@ -243,12 +240,10 @@ const RelationshipAssessmentTool = () => {
           </div>
         </main>
 
-        {/* Footer */}
         <footer className="py-6 px-4 text-center text-gray-500 bg-black/20 backdrop-blur-sm">
           <p>© {new Date().getFullYear()} La Force de l'Union</p>
         </footer>
 
-        {/* Results Modal */}
         {showResults && (
           <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <div className="bg-gray-900/90 border-2 border-red-500/20 rounded-2xl max-w-lg w-full p-8 relative">
