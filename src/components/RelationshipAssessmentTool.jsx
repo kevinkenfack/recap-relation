@@ -91,8 +91,8 @@ const RelationshipAssessmentTool = () => {
   };
 
   const getInterpretation = (score) => {
-    if (score < 1) return "Cette relation risque de te détruire émotionnellement 😢";
-    if (score < 2) return "Il serait peut-être temps de remettre en question cette relation";
+    if (score < 1) return "Cette relation va te détruire 😢";
+    if (score < 2) return "Il est temps de remettre en question cette relation";
     if (score < 3) return "La relation est complètement déséquilibrée";
     if (score < 4) return "La relation est bonne, mais reste vigilant et ne baisse pas la garde";
     if (score < 4.5) return "Votre relation est équilibrée et saine";
