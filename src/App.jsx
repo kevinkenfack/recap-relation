@@ -1,4 +1,3 @@
-import NeoBiolink from './components/NeoBiolink';
 import RelationshipAssessmentTool from './components/RelationshipAssessmentTool';
 
 function App() {
