@@ -91,13 +91,13 @@ const RelationshipAssessmentTool = () => {
   };
 
   const getInterpretation = (score) => {
-    if (score < 1) return "La Force est... presque absente";
-    if (score < 2) return "Le côté obscur consume votre relation";
-    if (score < 3) return "Un déséquilibre dans la Force menace votre union";
-    if (score < 4) return "La Force s'équilibre dans votre relation";
-    if (score < 4.5) return "Votre lien est aussi fort que la Force";
-    return "Votre union transcende même la Force";
-  };
+    if (score < 1) return "Cette relation risque de te détruire émotionnellement 😢";
+    if (score < 2) return "Il serait peut-être temps de remettre en question cette relation";
+    if (score < 3) return "La relation est complètement déséquilibrée";
+    if (score < 4) return "La relation est bonne, mais reste vigilant et ne baisse pas la garde";
+    if (score < 4.5) return "Votre relation est équilibrée et saine";
+    return "La relation fonctionne à plein régime, mais il est important de toujours rester attentif";
+  };  
 
   const canShowResults = () => {
     return allCriteria.every(c => notes[c.key] !== undefined);
@@ -105,7 +105,7 @@ const RelationshipAssessmentTool = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Background avec votre image */}
+      {/* Background*/}
       <div className="fixed inset-0 bg-black bg-cover bg-center" style={{ 
         backgroundImage: `url('/back.jpg')`
       }}>
@@ -118,9 +118,9 @@ const RelationshipAssessmentTool = () => {
         <header className="pt-12 pb-6 px-4">
           <div className="max-w-4xl mx-auto text-center space-y-4">
             <h1 className="text-4xl md:text-6xl font-bold text-red-500 tracking-tight">
-              La Force de l'Union
+                Le Coté Obscur
             </h1>
-            <p className="text-lg md:text-xl text-gray-400">Mesurez la puissance qui unit votre destin</p>
+            <p className="text-lg md:text-xl text-gray-400">Ceci est un outils qui vous permet de faire le bilan de la relation que vous entretenez avec votre copine actuelle afin de prendre une discision éclairer.</p>
           </div>
         </header>
 
@@ -217,14 +217,14 @@ const RelationshipAssessmentTool = () => {
               `}
             >
               <Heart className="w-6 h-6" />
-              Révéler votre Destinée
+              Voir le reslutat
             </button>
           </div>
         </main>
 
         {/* Footer */}
         <footer className="py-6 px-4 text-center text-gray-500 bg-black/20 backdrop-blur-sm">
-          <p>© {new Date().getFullYear()} La Force de l'Union</p>
+          <p>© {new Date().getFullYear()} Le coté obscur</p>
         </footer>
 
         {/* Results Modal */}
@@ -254,8 +254,8 @@ const RelationshipAssessmentTool = () => {
                 </div>
 
                 <div className="text-gray-400 bg-black/40 rounded-xl p-6">
-                  <p>La Force a parlé. Ce score reflète l'équilibre et la puissance de votre union, 
-                     mesuré à travers les aspects les plus cruciaux de votre relation.</p>
+                  <p>Ce score reflète l'équilibre et la force d'une relation, 
+                     mesuré à travers les aspects les plus cruciaux d'une relation. la descision finale te revient</p>
                 </div>
               </div>
             </div>
