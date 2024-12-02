@@ -2,32 +2,12 @@ import React, { useState } from 'react';
 import { 
   Heart, MessageCircle, Users, HandHeart, 
   Lock, Shuffle, Gift, CheckCircle, X,
-  Package, Sparkles, ImagePlus
+  Sparkles
 } from 'lucide-react';
 
 const RelationshipAssessmentTool = () => {
-  // Le reste du code reste identique, je change juste ImageIcon par ImagePlus
   const [notes, setNotes] = useState({});
   const [showResults, setShowResults] = useState(false);
-  const [backgroundImage, setBackgroundImage] = useState('');
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => setBackgroundImage(e.target.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const ratingDescriptions = {
-    0: "Non évalué",
-    1: "Très insuffisant",
-    2: "Insuffisant",
-    3: "Moyen",
-    4: "Bon",
-    5: "Excellent"
-  };
 
   const allCriteria = [
     {
@@ -89,10 +69,7 @@ const RelationshipAssessmentTool = () => {
   ];
 
   const handleChange = (key, value) => {
-    setNotes(prev => ({
-      ...prev,
-      [key]: value
-    }));
+    setNotes(prev => ({...prev, [key]: value}));
   };
 
   const calculateScore = () => {
@@ -114,11 +91,11 @@ const RelationshipAssessmentTool = () => {
   };
 
   const getInterpretation = (score) => {
-    if (score < 2) return "Relation nécessitant attention et dialogue";
-    if (score < 3) return "Relation avec potentiel d'amélioration";
-    if (score < 4) return "Relation équilibrée et positive";
-    if (score < 4.5) return "Relation épanouissante";
-    return "Relation exceptionnelle";
+    if (score < 2) return "Le côté obscur consume votre relation";
+    if (score < 3) return "Un déséquilibre dans la Force menace votre union";
+    if (score < 4) return "La Force s'équilibre dans votre relation";
+    if (score < 4.5) return "Votre lien est aussi fort que la Force";
+    return "Votre union transcende même la Force";
   };
 
   const canShowResults = () => {
@@ -126,149 +103,156 @@ const RelationshipAssessmentTool = () => {
   };
 
   return (
-    <div className="min-h-screen relative text-gray-100 flex flex-col">
-      {/* Background with overlay */}
-      <div 
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ 
-          backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
-          backgroundColor: backgroundImage ? 'transparent' : '#1e293b'
-        }}
-      >
-        <div className="absolute inset-0 bg-indigo-900/40 backdrop-blur-sm"></div>
+    <div className="min-h-screen">
+     {/* Background avec votre image */}
+        <div className="fixed inset-0 bg-black bg-cover bg-center" style={{ 
+              backgroundImage: `url('/obscure.png')`
+            }}>
+          <div className="absolute inset-0 bg-black/60" /> {/* Overlay pour la lisibilité */}
       </div>
 
-      {/* Image upload button - Changed ImageIcon to ImagePlus */}
-      <label className="absolute top-4 right-4 cursor-pointer z-10">
-        <div className="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition-all rounded-lg px-4 py-2 backdrop-blur-sm">
-          <ImagePlus className="w-5 h-5" />
-          <span className="text-sm">Changer l'arrière-plan</span>
-        </div>
-        <input 
-          type="file" 
-          accept="image/*" 
-          onChange={handleImageChange} 
-          className="hidden"
-        />
-      </label>
-
-      <div className="relative flex-grow">
-        <div className="max-w-4xl mx-auto p-4 md:p-6">
-          <header className="text-center mb-8 md:mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-violet-500">
-              Évaluation de Relation
+      {/* Main content */}
+      <div className="relative min-h-screen flex flex-col justify-between">
+        {/* Header Section */}
+        <header className="pt-12 pb-6 px-4">
+          <div className="max-w-4xl mx-auto text-center space-y-4">
+            <h1 className="text-5xl md:text-6xl font-bold text-red-500 tracking-tight">
+              La Force de l'Union
             </h1>
-            <p className="text-lg text-gray-200">Analysez la qualité de votre relation à travers différents aspects</p>
-          </header>
+            <p className="text-xl text-gray-400">Mesurez la puissance qui unit votre destin</p>
+          </div>
+        </header>
 
-          <div className="grid gap-4 md:gap-6">
+        {/* Criteria Grid */}
+        <main className="flex-grow px-4 py-8">
+          <div className="max-w-4xl mx-auto grid gap-6">
             {allCriteria.map((criteria) => (
-              <div key={criteria.key} 
-                   className="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-6 transition-all hover:bg-white/15">
-                <div className="flex flex-col md:flex-row md:items-start gap-4">
-                  <div className="p-3 bg-gradient-to-br from-pink-500/20 to-violet-500/20 rounded-lg text-pink-400 self-start">
-                    {criteria.icon}
-                  </div>
-                  
-                  <div className="flex-grow">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="font-medium text-lg">{criteria.label}</h3>
-                      <span className="text-xs px-2 py-1 rounded-full bg-violet-500/20 text-violet-300">×{criteria.weight}</span>
+              <div 
+                key={criteria.key}
+                className="bg-gray-900/40 backdrop-blur-sm border border-red-900/20 rounded-2xl overflow-hidden hover:bg-gray-900/60 transition-all duration-300"
+              >
+                <div className="p-6">
+                  <div className="flex items-start gap-6">
+                    <div className="p-3 rounded-lg bg-red-500/10">
+                      <div className="w-6 h-6 text-red-500">
+                        {criteria.icon}
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-300 mb-4">{criteria.description}</p>
                     
-                    {criteria.type === "rating" ? (
-                      <div className="flex flex-wrap gap-2">
-                        {[1, 2, 3, 4, 5].map((value) => (
-                          <button
-                            key={value}
-                            onClick={() => handleChange(criteria.key, value)}
-                            className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all
-                              ${notes[criteria.key] === value 
-                                ? 'bg-gradient-to-r from-pink-500 to-violet-500 text-white' 
-                                : 'bg-white/10 hover:bg-white/20'}`}
-                          >
-                            {value}
-                          </button>
-                        ))}
+                    <div className="flex-grow space-y-4">
+                      <div>
+                        <div className="flex items-center gap-3">
+                          <h3 className="text-xl font-semibold text-gray-100">{criteria.label}</h3>
+                          <span className="px-2 py-1 text-xs rounded-full bg-red-500/10 text-red-400 font-medium">
+                            Influence: {criteria.weight}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-gray-400">{criteria.description}</p>
                       </div>
-                    ) : (
-                      <div className="flex flex-wrap gap-3">
-                        {[true, false].map((value) => (
-                          <button
-                            key={value.toString()}
-                            onClick={() => handleChange(criteria.key, value)}
-                            className={`px-6 py-3 rounded-lg flex items-center gap-2 transition-all
-                              ${notes[criteria.key] === value
-                                ? value 
-                                  ? 'bg-gradient-to-r from-pink-500 to-violet-500 text-white'
-                                  : 'bg-gray-500/50 text-white'
-                                : 'bg-white/10 hover:bg-white/20'}`}
-                          >
-                            {value ? <CheckCircle className="w-4 h-4" /> : <X className="w-4 h-4" />}
-                            {value ? 'Oui' : 'Non'}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+
+                      {criteria.type === "rating" ? (
+                        <div className="flex flex-wrap gap-3">
+                          {[1, 2, 3, 4, 5].map((value) => (
+                            <button
+                              key={value}
+                              onClick={() => handleChange(criteria.key, value)}
+                              className={`
+                                w-14 h-14 rounded-lg flex items-center justify-center text-lg font-semibold
+                                border-2 transition-all duration-300
+                                ${notes[criteria.key] === value 
+                                  ? 'border-red-500 bg-red-500/20 text-red-400' 
+                                  : 'border-gray-700/50 bg-gray-800/30 text-gray-400 hover:border-red-500/50 hover:bg-red-500/10'}
+                              `}
+                            >
+                              {value}
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex gap-4">
+                          {[true, false].map((value) => (
+                            <button
+                              key={value.toString()}
+                              onClick={() => handleChange(criteria.key, value)}
+                              className={`
+                                px-6 py-3 rounded-lg flex items-center gap-2 text-lg font-medium
+                                border-2 transition-all duration-300
+                                ${notes[criteria.key] === value
+                                  ? 'border-red-500 bg-red-500/20 text-red-400'
+                                  : 'border-gray-700/50 bg-gray-800/30 text-gray-400 hover:border-red-500/50 hover:bg-red-500/10'}
+                              `}
+                            >
+                              {value ? <CheckCircle className="w-5 h-5" /> : <X className="w-5 h-5" />}
+                              {value ? 'Oui' : 'Non'}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <button
-            onClick={() => canShowResults() && setShowResults(true)}
-            className={`w-full mt-8 p-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2
-              ${canShowResults()
-                ? 'bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white'
-                : 'bg-white/10 text-gray-400 cursor-not-allowed'}`}
-          >
-            <CheckCircle className="w-5 h-5" />
-            Voir les Résultats
-          </button>
-        </div>
-      </div>
-
-      <footer className="relative bg-black/20 backdrop-blur-sm mt-8 py-6 text-center text-gray-300">
-        <p className="text-sm">
-          © {new Date().getFullYear()} Outil d'Évaluation de Relation. Tous droits réservés.
-        </p>
-      </footer>
-
-      {showResults && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
-          <div className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-lg rounded-2xl max-w-md w-full p-8 relative">
-            <button 
-              onClick={() => setShowResults(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+          {/* Results Button */}
+          <div className="max-w-4xl mx-auto mt-8">
+            <button
+              onClick={() => canShowResults() && setShowResults(true)}
+              className={`
+                w-full py-4 rounded-xl text-lg font-semibold
+                transition-all duration-300 flex items-center justify-center gap-2
+                ${canShowResults()
+                  ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20'
+                  : 'bg-gray-800/50 text-gray-500 cursor-not-allowed'}
+              `}
             >
-              <X className="w-6 h-6" />
+              <Heart className="w-6 h-6" />
+              Révéler votre Destinée
             </button>
+          </div>
+        </main>
 
-            <div className="text-center">
-              <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-violet-500 rounded-full animate-pulse"></div>
-                <Heart className="w-16 h-16 absolute inset-0 m-auto text-white" />
-              </div>
-              
-              <div className="mb-8">
-                <div className="text-6xl font-bold bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent mb-2">
-                  {calculateScore()}
-                </div>
-                <div className="text-xl text-gray-200">
-                  {getInterpretation(parseFloat(calculateScore()))}
-                </div>
-              </div>
+        {/* Footer */}
+        <footer className="py-6 px-4 text-center text-gray-500 bg-black/20 backdrop-blur-sm">
+          <p>© {new Date().getFullYear()} La Force de l'Union</p>
+        </footer>
 
-              <div className="text-sm text-gray-300 bg-white/5 rounded-lg p-4">
-                <p>Cette évaluation prend en compte tous les aspects de votre relation, 
-                   pondérés selon leur importance relative pour une relation équilibrée.</p>
+        {/* Results Modal */}
+        {showResults && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div className="bg-gray-900/90 border-2 border-red-500/20 rounded-2xl max-w-lg w-full p-8 relative">
+              <button 
+                onClick={() => setShowResults(false)}
+                className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <div className="text-center space-y-6">
+                <div className="relative w-24 h-24 mx-auto">
+                  <div className="absolute inset-0 bg-red-500/20 rounded-full animate-pulse" />
+                  <Heart className="w-16 h-16 absolute inset-0 m-auto text-red-500" />
+                </div>
+                
+                <div>
+                  <div className="text-7xl font-bold text-red-500 mb-2">
+                    {calculateScore()}
+                  </div>
+                  <div className="text-xl text-gray-300">
+                    {getInterpretation(parseFloat(calculateScore()))}
+                  </div>
+                </div>
+
+                <div className="text-gray-400 bg-black/40 rounded-xl p-6">
+                  <p>La Force a parlé. Ce score reflète l'équilibre et la puissance de votre union, 
+                     mesuré à travers les aspects les plus cruciaux de votre relation.</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
